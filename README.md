@@ -34,7 +34,7 @@ Le client rencontrait des limitations avec une architecture traditionnelle et so
 │ ├── migrate.py        
 │ └── wait_for_mongo.py     
 ├── data/       
-│ └── dataset.csv       
+│ └── healthcare_dataset.csv     
 └── README.md       
 
 ### Services Docker
