@@ -23,19 +23,19 @@ Le client rencontrait des limitations avec une architecture traditionnelle et so
 
 ## 🧱 Architecture globale
 
-├── docker-compose.yml
-├── Makefile
-├── .env.example
-├── mongo/
-│ └── init-mongo.js
-├── migrator/
-│ ├── Dockerfile
-│ ├── requirements.txt
-│ ├── migrate.py
-│ └── wait_for_mongo.py
-├── data/
-│ └── dataset.csv
-└── README.md
+├── docker-compose.yml      
+├── Makefile        
+├── .env        
+├── mongo/      
+│ └── init-mongo.js     
+├── migrator/       
+│ ├── Dockerfile        
+│ ├── requirements.txt      
+│ ├── migrate.py        
+│ └── wait_for_mongo.py     
+├── data/       
+│ └── dataset.csv       
+└── README.md       
 
 ### Services Docker
 - **mongodb** : base MongoDB avec authentification activée
