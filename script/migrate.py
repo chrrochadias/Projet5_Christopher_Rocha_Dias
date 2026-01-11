@@ -52,6 +52,7 @@ def read_dataset(path: str) -> pd.DataFrame:
 
 
 def safe_int(v: Any) -> Optional[int]:
+    """Safely casts to int, returning None on failure"""
     if v is None or (isinstance(v, float) and math.isnan(v)):
         return None
     try:
@@ -61,6 +62,7 @@ def safe_int(v: Any) -> Optional[int]:
 
 
 def safe_float(v: Any) -> Optional[float]:
+    """Safely casts to float, returning None on failure"""
     if v is None or (isinstance(v, float) and math.isnan(v)):
         return None
     try:
@@ -236,6 +238,7 @@ def main() -> None:
     processed = 0
     total_upserted = 0
 
+    # Iterates batches; upserts mapped rows; reports results
     for batch in chunker(records, batch_size):
         ops: List[UpdateOne] = []
 
