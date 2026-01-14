@@ -16,6 +16,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 30
+    networks:
+      - default
 
   script:
     build: ./script
@@ -36,6 +38,13 @@ services:
     volumes:
       - ./data:/app/data:ro
     command: ["bash", "-lc", "python wait_for_mongo.py --timeout 60 && python migrate.py && python wait_for_mongo.py --check-data --collection patients --min-docs 1 --timeout 60"]
+    networks:
+      - default
 
 volumes:
   mongo_data:
+
+networks:
+  default:
+    name: healthcare-network
+    driver: bridge

@@ -1,9 +1,16 @@
 # Makefile — Projet Mongo migration
+
+ifneq (,$(wildcard .env))
+	include .env
+	export
+endif
+
+
 SHELL := /bin/bash
 
 COMPOSE := docker compose
 MONGO_SERVICE := mongodb
-MIGRATOR_SERVICE := migrator
+MIGRATOR_SERVICE := script
 
 .DEFAULT_GOAL := help
 
@@ -41,4 +48,22 @@ logs-mongo: ## Logs Mongo uniquement
 	@$(COMPOSE) logs -f $(MONGO_SERVICE)
 
 logs-migrator: ## Logs migrator uniquement
-	@$(COMPOSE) logs -f $(MIGRATOR_SERVICE)_
+	@$(COMPOSE) logs -f $(MIGRATOR_SERVICE)
+
+migrate: check-env ## Lance la migration (run éphémère)
+	@$(COMPOSE) run --rm $(MIGRATOR_SERVICE) bash -lc "python wait_for_mongo.py --timeout 60 && python migrate.py"
+
+verify: check-env ## Vérifie qu'il y a des données (COLL=patients MIN=1)
+	@COLL=$${COLL:-patients}; MIN=$${MIN:-1}; \
+	$(COMPOSE) run --rm $(MIGRATOR_SERVICE) python wait_for_mongo.py --check-data --collection $$COLL --min-docs $$MIN --timeout 60
+
+mongo-shell: check-env ## Ouvre mongosh root (admin)
+	@$(COMPOSE) exec $(MONGO_SERVICE) mongosh -u $$MONGO_ROOT_USER -p $$MONGO_ROOT_PASSWORD --authenticationDatabase admin
+
+count: check-env ## Compte les docs (COLL=patients par défaut)
+	@COLL=$${COLL:-patients}; \
+	$(COMPOSE) exec $(MONGO_SERVICE) mongosh -u $$MONGO_ROOT_USER -p $$MONGO_ROOT_PASSWORD --authenticationDatabase admin --quiet --eval "\
+	const dbName='$$MONGO_DB'; \
+	const collName='$$COLL'; \
+	const c=db.getSiblingDB(dbName).getCollection(collName).countDocuments(); \
+	print('db=' + dbName + ' coll=' + collName + ' count=' + c);"

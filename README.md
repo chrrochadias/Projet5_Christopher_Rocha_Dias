@@ -94,3 +94,41 @@ Les credentials sont fournis via variables d’environnement (non versionnées).
   "created_at": "2026-01-05T20:40:00Z",
   "updated_at": "2026-01-05T20:40:00Z"
 }
+```
+
+## ▶️ Exécution en local (Docker)
+
+### Prérequis
+- Docker + Docker Compose
+- Make
+
+### 1) Démarrer l’ensemble (MongoDB + migration)
+- `make up`
+
+Le service migrator exécute automatiquement :
+- un ping Mongo (attente readiness)
+- la migration (migrate.py)
+
+### 2) Vérifier les logs (si la base est vide)
+`make logs-migrator` 
+
+### 3) Accéder à MongoDB (shell)
+`make mongo-shell`
+
+Puis dans la console Mongo :
+
+- `use medical`
+- `db.patients.countDocuments()`
+- `db.patients.findOne()`
+
+### 3.1) Vérifier rapidement le nombre de patients
+`make count`
+
+### 4) Lancer la migration manuellement
+`make migrate`
+
+### 5) Vérifier automatiquement la présence des données
+`make verify`
+
+### 6) Reset complet (⚠️ supprime les données)
+`make reset`
